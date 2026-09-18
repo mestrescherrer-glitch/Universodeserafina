@@ -613,3 +613,140 @@ footer a {
     justify-self: center;
   }
 }
+
+/* ============================================
+   PÁGINA DO FOGUETE
+   ============================================ */
+
+.foguete-conteudo {
+  background: var(--bege);
+  padding: 60px 30px 80px;
+}
+
+.foguete-card {
+  max-width: 640px;
+  margin: 0 auto 40px;
+  background: var(--branco);
+  border-radius: 16px;
+  padding: 40px 30px;
+  text-align: center;
+  box-shadow: 0 6px 20px rgba(0,0,0,0.08);
+}
+
+.foguete-icone {
+  font-size: 56px;
+  margin-bottom: 16px;
+}
+
+.foguete-card h2 {
+  font-size: 26px;
+  color: #1a1a1a;
+  margin-bottom: 16px;
+}
+
+.foguete-card p {
+  font-size: 16px;
+  color: var(--texto-claro);
+  line-height: 1.7;
+  margin-bottom: 24px;
+}
+
+.btn-grande {
+  font-size: 17px;
+  padding: 15px 38px;
+}
+
+.foguete-aviso {
+  max-width: 640px;
+  margin: 0 auto 50px;
+  background: #fff4d6;
+  border-left: 5px solid var(--dourado);
+  padding: 16px 22px;
+  border-radius: 8px;
+  font-size: 15px;
+  color: #6b4f0f;
+  line-height: 1.6;
+}
+
+.foguete-passos {
+  max-width: 720px;
+  margin: 0 auto 50px;
+}
+
+.foguete-passos h2 {
+  text-align: center;
+  font-size: 28px;
+  color: #1a1a1a;
+  margin-bottom: 32px;
+}
+
+.passo-item {
+  display: flex;
+  gap: 20px;
+  align-items: flex-start;
+  background: var(--branco);
+  border-radius: 12px;
+  padding: 20px 24px;
+  margin-bottom: 16px;
+  box-shadow: 0 3px 10px rgba(0,0,0,0.05);
+}
+
+.passo-numero {
+  flex-shrink: 0;
+  width: 42px;
+  height: 42px;
+  background: var(--verde-agua);
+  color: var(--branco);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 20px;
+  font-weight: bold;
+}
+
+.passo-item h3 {
+  font-size: 18px;
+  color: #1a1a1a;
+  margin-bottom: 6px;
+}
+
+.passo-item p {
+  font-size: 14px;
+  color: var(--texto-claro);
+  line-height: 1.6;
+}
+
+.foguete-cta {
+  max-width: 640px;
+  margin: 0 auto;
+  text-align: center;
+  padding: 30px;
+  background: var(--azul-claro);
+  border-radius: 16px;
+}
+
+.foguete-cta p {
+  font-size: 17px;
+  color: #1a1a1a;
+  margin-bottom: 20px;
+  font-weight: bold;
+}
+
+/* Responsivo foguete */
+@media (max-width: 600px) {
+  .foguete-card {
+    padding: 30px 22px;
+  }
+
+  .passo-item {
+    padding: 16px 18px;
+    gap: 14px;
+  }
+
+  .passo-numero {
+    width: 36px;
+    height: 36px;
+    font-size: 17px;
+  }
+}
