@@ -1,18 +1,113 @@
-universodeserafina/
-│
-├── index.html
-├── jogos.html
-│
-├── css/
-│   └── style.css
-│
-├── imagens/
-│   ├── logo.png
-│   ├── serafina-capa.jpg
-│   └── fundo-foguete.jpg
-│
-└── jogos/
-    ├── caca-estrelas.html
-    ├── laboratorio.html
-    ├── quebra-cabeca.html
-    └── desafio-espacial.html
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Universo da Serafina — Histórias, atividades e aventuras para crianças</title>
+  <meta name="description" content="Bem-vindo ao Universo da Serafina! Histórias, atividades e aventuras para crianças.">
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+  <!-- ========== HEADER ========== -->
+  <header>
+    <a href="index.html" class="logo">
+      <img src="imagens/logo.png" alt="Universo da Serafina">
+    </a>
+    <nav>
+      <ul>
+        <li><a href="index.html">Início</a></li>
+        <li><a href="jogos.html">Jogos Online</a></li>
+        <li><a href="#contato">Contato</a></li>
+      </ul>
+    </nav>
+  </header>
+
+  <!-- ========== HERO ========== -->
+  <section class="hero">
+    <div class="hero-content">
+      <h1>A Incrível Jornada da galinha Serafina até a Lua</h1>
+      <p>Serafina era apenas uma galinha do sítio. Mas ela acreditou em seu sonho de chegar à Lua. Agora é sua vez de embarcar nessa aventura!</p>
+      <a href="jogos.html" class="btn-primario">🎮 Jogar agora</a>
+    </div>
+  </section>
+
+  <!-- ========== ATIVIDADES ========== -->
+  <section class="atividades">
+    <h2>Nossas Atividades</h2>
+
+    <div class="card-atividade">
+      <div class="icone">🎮</div>
+      <h3>Jogos online</h3>
+      <p>As crianças podem explorar o espaço por meio de atividades criativas, brincadeiras e experiências educativas que estimulam a imaginação, a curiosidade e o prazer de aprender. Divirta-se gratuitamente com nossos jogos online e embarque em novas missões ao lado da Serafina!</p>
+      <a href="jogos.html" class="btn-card">clique aqui</a>
+    </div>
+
+    <div class="card-atividade">
+      <div class="icone">🚀</div>
+      <h3>Clube dos Astronautas</h3>
+      <p>A aventura está apenas começando. Cante e dance com a galinha Serafina e seus amigos! Ouça e baixe as músicas do sítio do Sr. Jaime.</p>
+      <a href="musicas.html" class="btn-card">clique aqui</a>
+    </div>
+
+    <div class="card-atividade">
+      <div class="icone">🛠️</div>
+      <h3>Conteúdos Exclusivos</h3>
+      <p>Que tal construir um foguete igual ao da galinha Serafina? Com algumas caixas de papelão e muita imaginação, você poderá criar uma nave incrível para brincar de explorar o espaço.</p>
+      <a href="foguete.html" class="btn-card">clique aqui</a>
+    </div>
+
+    <div class="card-atividade">
+      <div class="icone">📚</div>
+      <h3>Livro da Galinha Serafina</h3>
+      <p>Conheça a história completa da galinha que sonhou em chegar à Lua. Adquira o livro "A Incrível Jornada da galinha Serafina até a Lua" na loja online da UiClap.</p>
+      <a href="https://loja.uiclap.com/titulo/ua202649" target="_blank" rel="noopener" class="btn-card">clique aqui</a>
+    </div>
+
+    <div class="card-atividade">
+      <div class="icone">🎨</div>
+      <h3>Atividades Educativas</h3>
+      <p>No Universo da Serafina, as crianças podem continuar explorando o espaço por meio de atividades criativas e educativas. Faça download dos desenhos para colorir divertidos exclusivos que transformam a leitura em uma experiência inesquecível.</p>
+      <a href="desenhos.html" class="btn-card">clique aqui</a>
+    </div>
+
+  </section>
+
+  <!-- ========== DEPOIMENTO ========== -->
+  <section class="depoimento">
+    <h2>O que dizem os leitores</h2>
+    <blockquote>
+      "As atividades do site são incríveis! Meu filho adorou colorir e aprender sobre a Lua!"
+      <cite>Ana Clara</cite>
+      <small>10.09.26</small>
+    </blockquote>
+  </section>
+
+  <!-- ========== SOBRE ========== -->
+  <section class="sobre">
+    <div class="sobre-content">
+      <h2>Sobre o universo de Serafina</h2>
+      <p>Serafina era apenas uma galinha do sítio. Mas ela acreditou em seu sonho de chegar à Lua. Agora é sua vez de embarcar nessa aventura!</p>
+      <p>Explore atividades exclusivas, construa foguetes, descubra curiosidades sobre o espaço, jogos online, baixe materiais criativos e muito mais, faça parte do Clube dos Astronautas. Porque toda criança carrega dentro de si um sonho capaz de alcançar as estrelas. 🚀🌙🐔</p>
+    </div>
+  </section>
+
+  <!-- ========== CONTATO ========== -->
+  <section class="contato" id="contato">
+    <h2>Contato</h2>
+    <form class="form-contato" action="https://formspree.io/f/xoevvyyv" method="POST">
+      <input type="text" name="nome" placeholder="Seu nome" required>
+      <input type="email" name="email" placeholder="Seu e-mail" required>
+      <textarea name="mensagem" placeholder="Escreva sua mensagem..." required></textarea>
+      <button type="submit">Enviar mensagem</button>
+    </form>
+  </section>
+
+  <!-- ========== RODAPÉ ========== -->
+  <footer>
+    <p>© Universo da Serafina — Todos os direitos reservados</p>
+    <p>Feito com 💛 por <a href="https://universodeserafina.com">universodeserafina.com</a></p>
+  </footer>
+
+</body>
+</html>
