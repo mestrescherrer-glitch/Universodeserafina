@@ -1,0 +1,292 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Serafina — Desafio Espacial</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+:root{--space:#101a4d;--blue:#60a5fa;--yellow:#facc15;--pink:#f9a8d4}
+body{min-height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:flex-start;padding:24px 12px 30px;font-family:"Segoe UI",Arial,sans-serif;background:radial-gradient(circle at 20% 20%,rgba(99,102,241,.25),transparent 25%),radial-gradient(circle at 80% 80%,rgba(236,72,153,.18),transparent 25%),linear-gradient(180deg,#0b1238,#030617);color:#fff;overflow-x:hidden}
+h1{font-size:clamp(22px,5vw,32px);letter-spacing:1px;margin:0 0 6px;text-align:center;color:#fef3c7;text-shadow:0 0 18px rgba(250,204,21,.6)}
+.subtitle{font-size:13px;color:#bfdbfe;margin:0 0 18px;text-align:center}
+#gameContainer{position:relative;width:min(400px,94vw);aspect-ratio:2/3;margin:0 auto}
+canvas{display:block;width:100%;height:100%;background:#050817;border:3px solid #818cf8;border-radius:20px;box-shadow:0 0 30px rgba(96,165,250,.3),0 0 70px rgba(129,140,248,.15);touch-action:none}
+#hud{position:absolute;top:12px;left:14px;right:14px;display:flex;justify-content:space-between;gap:8px;pointer-events:none;font-size:14px;font-weight:bold;color:#e0f2fe;text-shadow:0 2px 5px #000}
+.hudBox{background:rgba(15,23,42,.7);border:1px solid rgba(147,197,253,.35);border-radius:12px;padding:7px 10px}
+#progressBar{position:absolute;top:58px;left:15px;right:15px;height:7px;background:rgba(255,255,255,.15);border-radius:20px;overflow:hidden;pointer-events:none}
+#progress{height:100%;width:0%;background:linear-gradient(90deg,#facc15,#f9a8d4);border-radius:20px}
+#gameControls{width:min(400px,94vw);display:flex;justify-content:center;align-items:center;gap:10px;margin-top:22px;margin-bottom:20px;position:relative;z-index:20}
+#gameControls button{padding:9px 14px;font-size:13px;color:#e0f2fe;background:rgba(15,23,42,.92);border:1px solid rgba(147,197,253,.45);box-shadow:none}
+#gameControls button:hover{background:rgba(30,41,59,.98);box-shadow:none;transform:none}
+#quitBtn:hover{background:rgba(30,41,59,.95);box-shadow:none;transform:none}
+#overlay{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:25px;border-radius:17px;background:linear-gradient(180deg,rgba(9,16,55,.94),rgba(20,10,50,.96));z-index:10}
+#overlay.hidden{display:none}
+.serafina{font-size:64px;margin-bottom:5px;animation:none;transform:none}
+#overlay h2{font-size:clamp(23px,6vw,30px);color:#fde68a;margin-bottom:12px;text-shadow:0 0 15px rgba(250,204,21,.4)}
+#overlay p{max-width:300px;color:#dbeafe;font-size:15px;line-height:1.5;margin-bottom:15px}
+#overlay .tip{font-size:13px;color:#fbcfe8;max-width:280px;margin-bottom:18px}
+button{border:none;border-radius:30px;padding:13px 30px;font-size:16px;font-weight:bold;color:#172554;background:linear-gradient(135deg,#fde68a,#facc15);box-shadow:0 5px 18px rgba(250,204,21,.35);cursor:pointer;transition:transform .15s,box-shadow .15s}
+button:hover{transform:translateY(-2px) scale(1.03);box-shadow:0 8px 25px rgba(250,204,21,.5)}
+button:active{transform:scale(.97)}
+button:focus-visible{outline:3px solid #f9a8d4;outline-offset:3px}
+#instructions{color:#93c5fd;margin-top:0;font-size:13px;text-align:center;line-height:1.6}
+.educational{margin-top:10px;color:#fbcfe8;font-size:12px;text-align:center;max-width:380px}
+@keyframes float{0%,100%{transform:translateY(0)}50%{transform:translateY(-8px)}}
+
+
+#gameContainer:fullscreen ~ #gameControls,
+#gameContainer:-webkit-full-screen ~ #gameControls{display:none}
+
+#gameContainer:fullscreen{
+  width:min(100vw, 66.6667vh);
+  height:min(100vh, 150vw);
+  aspect-ratio:2 / 3;
+  margin:auto;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  background:#030617;
+}
+#gameContainer:fullscreen canvas{
+  width:100%;
+  height:100%;
+  object-fit:contain;
+}
+#gameContainer:-webkit-full-screen{
+  width:min(100vw, 66.6667vh);
+  height:min(100vh, 150vw);
+  aspect-ratio:2 / 3;
+  margin:auto;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  background:#030617;
+}
+#gameContainer:-webkit-full-screen canvas{
+  width:100%;
+  height:100%;
+  object-fit:contain;
+}
+
+@media(max-width:450px){
+  body{padding:18px 8px 24px}
+  .subtitle{margin-bottom:14px}
+  #gameControls{gap:8px;margin-top:14px}
+  #gameControls button{min-height:38px;padding:8px 9px;font-size:12px}
+  #instructions{margin-top:13px;padding:9px 10px;font-size:12px}
+  .educational{margin-top:10px;padding:9px 10px}
+}
+@media(prefers-reduced-motion:reduce){*,*::before,*::after{animation-duration:.01ms!important;transition-duration:.01ms!important}}
+
+/* Organização final do layout */
+#gameContainer{
+  position:relative;
+  width:min(400px,94vw);
+  aspect-ratio:2 / 3;
+  margin:0 auto;
+}
+#gameControls{
+  position:relative !important;
+  inset:auto !important;
+  width:min(400px,94vw);
+  display:flex;
+  justify-content:center;
+  align-items:center;
+  gap:12px;
+  margin:18px auto 0;
+  z-index:20;
+}
+#gameControls button{
+  position:relative !important;
+  inset:auto !important;
+  flex:1;
+  min-height:40px;
+  padding:9px 12px;
+  font-size:13px;
+  color:#172554;
+  background:linear-gradient(135deg,#fde68a,#facc15);
+  border:0;
+  border-radius:30px;
+  box-shadow:0 5px 14px rgba(250,204,21,.25);
+}
+#gameControls button:hover{
+  transform:translateY(-1px);
+  box-shadow:0 7px 18px rgba(250,204,21,.35);
+}
+#instructions{
+  width:min(400px,94vw);
+  margin:16px auto 0;
+  padding:10px 14px;
+  color:#bfdbfe;
+  font-size:13px;
+  text-align:center;
+  line-height:1.6;
+  border:1px solid rgba(147,197,253,.18);
+  border-radius:12px;
+  background:rgba(15,23,42,.42);
+}
+.educational{
+  width:min(400px,94vw);
+  margin:12px auto 0;
+  padding:10px 14px;
+  color:#fbcfe8;
+  font-size:12px;
+  text-align:center;
+  line-height:1.5;
+  border-top:1px solid rgba(249,168,212,.16);
+}
+#gameContainer:fullscreen ~ #gameControls,
+#gameContainer:-webkit-full-screen ~ #gameControls{
+  display:none !important;
+}
+@media(max-width:450px){
+  #gameControls{gap:8px;margin-top:16px}
+  #gameControls button{min-height:38px;padding:8px 9px;font-size:12px}
+  #instructions{margin-top:13px;padding:9px 10px;font-size:12px}
+  .educational{margin-top:10px;padding:9px 10px}
+}
+
+</style>
+</head>
+<body>
+<h1>🐔🚀 Serafina — Desafio Espacial</h1>
+<p class="subtitle">Ajude Serafina a chegar à Lua! 🌙</p>
+
+<div id="gameContainer">
+<canvas id="game" width="400" height="600" aria-label="Jogo espacial da Serafina"></canvas>
+<div id="hud">
+  <div class="hudBox">⭐ Pontos: <span id="score">0</span></div>
+  <div class="hudBox">⏱️ Tempo: <span id="time">30</span>s</div>
+</div>
+<div id="progressBar" aria-label="Progresso da missão"><div id="progress"></div></div>
+<div id="overlay">
+  <div class="serafina">🐔🚀</div>
+  <h2>Serafina — Desafio Espacial</h2>
+  <p>Olá, pequeno astronauta! Ajude Serafina a atravessar o espaço, desviando dos asteroides até chegar à Lua.</p>
+  <p class="tip">💡 Dica: com atenção, coragem e persistência, podemos superar desafios!</p>
+  <button id="startBtn">🚀 Começar missão</button>
+</div>
+</div>
+<div id="gameControls">
+  <button id="fullscreenBtn" type="button" aria-label="Tela cheia">⛶ Tela cheia</button>
+  <button id="quitBtn" type="button" aria-label="Encerrar jogo">✖ Encerrar jogo</button>
+</div>
+<p id="instructions">🖱️ Mouse / 👆 Toque para mover | ⬅️ ➡️ Setas no PC</p>
+<p class="educational">🌟 Aprender brincando também é uma forma de explorar o universo!</p>
+
+<script>
+"use strict";
+const canvas=document.getElementById("game"),ctx=canvas.getContext("2d");
+const scoreEl=document.getElementById("score"),timeEl=document.getElementById("time");
+const progressEl=document.getElementById("progress"),overlay=document.getElementById("overlay");
+const startBtn=document.getElementById("startBtn"),W=canvas.width,H=canvas.height,MISSION_TIME=30;
+let player,obstacles=[],particles=[],stars=[],score=0,timeLeft=MISSION_TIME,speed=2.4,spawnTimer=0,running=false,lastTime=0;
+const keys={};
+
+function createStars(){stars=[];for(let i=0;i<80;i++)stars.push({x:Math.random()*W,y:Math.random()*H,size:Math.random()*2+.5,speed:Math.random()*.5+.15,alpha:Math.random()*.7+.2})}
+function resetGame(){
+ player={x:W/2-17,y:H-80,w:34,h:42,targetX:W/2-17};obstacles=[];particles=[];
+ score=0;timeLeft=MISSION_TIME;speed=2.4;spawnTimer=0;running=true;
+ scoreEl.textContent=score;timeEl.textContent=MISSION_TIME;progressEl.style.width="0%";createStars();
+}
+function spawnObstacle(){const size=22+Math.random()*28;obstacles.push({x:Math.random()*(W-size),y:-size-10,w:size,h:size,speed:speed+Math.random()*1.4,rot:Math.random()*Math.PI*2,rotSpeed:(Math.random()-.5)*.08,shade:Math.random()>.5?"#9ca3af":"#78716c"})}
+function spawnParticle(x,y,color,amount=12){for(let i=0;i<amount;i++)particles.push({x,y,vx:(Math.random()-.5)*6,vy:(Math.random()-.5)*6,life:35+Math.random()*15,maxLife:50,size:Math.random()*3+1,color})}
+function movePlayerTo(clientX){if(!player)return;const rect=canvas.getBoundingClientRect(),scaleX=W/rect.width;player.targetX=Math.max(0,Math.min(W-player.w,(clientX-rect.left)*scaleX-player.w/2))}
+canvas.addEventListener("mousemove",e=>{if(running)movePlayerTo(e.clientX)});
+canvas.addEventListener("touchmove",e=>{e.preventDefault();if(running&&e.touches.length)movePlayerTo(e.touches[0].clientX)},{passive:false});
+canvas.addEventListener("touchstart",e=>{e.preventDefault();if(running&&e.touches.length)movePlayerTo(e.touches[0].clientX)},{passive:false});
+window.addEventListener("keydown",e=>{if(["ArrowLeft","ArrowRight"," "].includes(e.key))e.preventDefault();keys[e.key]=true});
+window.addEventListener("keyup",e=>keys[e.key]=false);
+function collision(a,b){const dx=a.x+a.w/2-b.x-b.w/2,dy=a.y+a.h/2-b.y-b.h/2;return Math.hypot(dx,dy)<(a.w/2+b.w/2)*.72}
+
+function update(dt){
+ if(!running)return;
+ if(keys.ArrowLeft)player.targetX-=7*dt*60;
+ if(keys.ArrowRight)player.targetX+=7*dt*60;
+ player.targetX=Math.max(0,Math.min(W-player.w,player.targetX));
+ player.x+=(player.targetX-player.x)*Math.min(1,.22*dt*60);
+ speed+=.0008*dt*60;spawnTimer+=dt*60;
+ const spawnRate=Math.max(20,48-Math.floor((MISSION_TIME-timeLeft)/2));
+ if(spawnTimer>=spawnRate){spawnObstacle();spawnTimer=0}
+ for(let i=obstacles.length-1;i>=0;i--){
+  const o=obstacles[i];o.y+=o.speed*dt*60;o.rot+=o.rotSpeed*dt*60;
+  if(collision(player,o)){spawnParticle(player.x+player.w/2,player.y+player.h/2,"#fde68a",25);running=false;showGameOver();return}
+  if(o.y>H+60){obstacles.splice(i,1);score+=10;scoreEl.textContent=score}
+ }
+ for(let i=particles.length-1;i>=0;i--){const p=particles[i];p.x+=p.vx*dt*60;p.y+=p.vy*dt*60;p.life-=dt*60;if(p.life<=0)particles.splice(i,1)}
+ stars.forEach(s=>{s.y+=s.speed*dt*60;if(s.y>H){s.y=-5;s.x=Math.random()*W}});
+ timeLeft=Math.max(0,timeLeft-dt);timeEl.textContent=Math.ceil(timeLeft);
+ progressEl.style.width=(((MISSION_TIME-timeLeft)/MISSION_TIME)*100)+"%";
+ if(timeLeft<=0){running=false;showVictory()}
+}
+function drawRocket(x,y,w,h){
+ ctx.save();ctx.translate(x+w/2,y+h/2);
+ ctx.fillStyle="#f97316";ctx.beginPath();ctx.moveTo(-7,h/2-3);ctx.lineTo(0,h/2+15);ctx.lineTo(7,h/2-3);ctx.closePath();ctx.fill();
+ ctx.fillStyle="#fde047";ctx.beginPath();ctx.moveTo(-4,h/2-2);ctx.lineTo(0,h/2+9);ctx.lineTo(4,h/2-2);ctx.closePath();ctx.fill();
+ const g=ctx.createLinearGradient(0,-h/2,0,h/2);g.addColorStop(0,"#fef3c7");g.addColorStop(.5,"#fff");g.addColorStop(1,"#bfdbfe");
+ ctx.fillStyle=g;ctx.strokeStyle="#60a5fa";ctx.lineWidth=2;ctx.beginPath();ctx.moveTo(0,-h/2);ctx.quadraticCurveTo(w/2,-h/5,w/2-4,h/2-4);ctx.lineTo(-w/2+4,h/2-4);ctx.quadraticCurveTo(-w/2,-h/5,0,-h/2);ctx.closePath();ctx.fill();ctx.stroke();
+ ctx.fillStyle="#60a5fa";ctx.strokeStyle="#1d4ed8";ctx.beginPath();ctx.arc(0,-5,8,0,Math.PI*2);ctx.fill();ctx.stroke();
+ ctx.fillStyle="rgba(255,255,255,.75)";ctx.beginPath();ctx.arc(-3,-8,2.5,0,Math.PI*2);ctx.fill();
+ ctx.fillStyle="#f9a8d4";ctx.beginPath();ctx.moveTo(-w/2+5,5);ctx.lineTo(-w/2-7,h/2-2);ctx.lineTo(-w/2+7,h/2-7);ctx.closePath();ctx.fill();
+ ctx.beginPath();ctx.moveTo(w/2-5,5);ctx.lineTo(w/2+7,h/2-2);ctx.lineTo(w/2-7,h/2-7);ctx.closePath();ctx.fill();
+ ctx.fillStyle="#facc15";ctx.font="bold 10px Arial";ctx.textAlign="center";ctx.fillText("★",0,19);ctx.restore();
+}
+function drawObstacle(o){
+ ctx.save();ctx.translate(o.x+o.w/2,o.y+o.h/2);ctx.rotate(o.rot);ctx.fillStyle=o.shade;ctx.strokeStyle="#d1d5db";ctx.lineWidth=2;ctx.beginPath();
+ const points=8;for(let i=0;i<points;i++){const a=i/points*Math.PI*2,r=o.w/2*(.75+Math.random()*.25),px=Math.cos(a)*r,py=Math.sin(a)*r;i?ctx.lineTo(px,py):ctx.moveTo(px,py)}
+ ctx.closePath();ctx.fill();ctx.stroke();ctx.fillStyle="rgba(30,41,59,.35)";
+ ctx.beginPath();ctx.arc(-o.w*.15,-o.h*.1,o.w*.1,0,Math.PI*2);ctx.fill();
+ ctx.beginPath();ctx.arc(o.w*.15,o.h*.15,o.w*.08,0,Math.PI*2);ctx.fill();ctx.restore();
+}
+function drawMoon(){
+ const x=W-62,y=H-70,r=28;ctx.save();ctx.shadowColor="#fde68a";ctx.shadowBlur=25;ctx.fillStyle="#fef3c7";ctx.beginPath();ctx.arc(x,y,r,0,Math.PI*2);ctx.fill();ctx.shadowBlur=0;ctx.fillStyle="rgba(180,150,100,.25)";
+ [[-10,-8,5],[9,5,7],[-2,13,4]].forEach(v=>{ctx.beginPath();ctx.arc(x+v[0],y+v[1],v[2],0,Math.PI*2);ctx.fill()});ctx.restore();
+}
+function draw(){
+ ctx.clearRect(0,0,W,H);const bg=ctx.createLinearGradient(0,0,0,H);bg.addColorStop(0,"#080d2b");bg.addColorStop(1,"#02040f");ctx.fillStyle=bg;ctx.fillRect(0,0,W,H);
+ stars.forEach(s=>{ctx.globalAlpha=s.alpha;ctx.fillStyle="#fff";ctx.beginPath();ctx.arc(s.x,s.y,s.size,0,Math.PI*2);ctx.fill()});ctx.globalAlpha=1;drawMoon();
+ if(player&&running)drawRocket(player.x,player.y,player.w,player.h);obstacles.forEach(drawObstacle);
+ particles.forEach(p=>{ctx.globalAlpha=p.life/p.maxLife;ctx.fillStyle=p.color;ctx.beginPath();ctx.arc(p.x,p.y,p.size,0,Math.PI*2);ctx.fill()});ctx.globalAlpha=1;
+}
+function showGameOver(){overlay.classList.remove("hidden");overlay.innerHTML=`<div class="serafina">🐔💫</div><h2>Quase lá, astronauta!</h2><p>Você fez <strong>${score}</strong> pontos! Toda tentativa é uma oportunidade de aprender.</p><p class="tip">💡 Observe os asteroides e tente novamente!</p><button id="restartBtn">🚀 Tentar novamente</button>`;document.getElementById("restartBtn").addEventListener("click",startGame)}
+function showVictory(){overlay.classList.remove("hidden");overlay.innerHTML=`<div class="serafina">🐔🌙</div><h2>Missão cumprida!</h2><p>Você ajudou Serafina a chegar à Lua! Sua pontuação foi <strong>${score}</strong> pontos.</p><p class="tip">⭐ Assim como Serafina, nunca desista dos seus sonhos!</p><button id="restartBtn">🌟 Jogar novamente</button>`;document.getElementById("restartBtn").addEventListener("click",startGame)}
+async function toggleFullscreen(){
+ try{
+  const container=document.getElementById("gameContainer");
+  const isFullscreen=document.fullscreenElement||document.webkitFullscreenElement;
+  if(!isFullscreen){
+   if(container.requestFullscreen) await container.requestFullscreen();
+   else if(container.webkitRequestFullscreen) container.webkitRequestFullscreen();
+   fullscreenBtn.textContent="⛶ Sair da tela cheia";
+  }else{
+   if(document.exitFullscreen) await document.exitFullscreen();
+   else if(document.webkitExitFullscreen) document.webkitExitFullscreen();
+   fullscreenBtn.textContent="⛶ Tela cheia";
+  }
+ }catch(error){
+  alert("O navegador não permitiu a tela cheia. Tente novamente clicando no botão.");
+ }
+}
+function updateFullscreenLabel(){
+ const active=document.fullscreenElement||document.webkitFullscreenElement;
+ fullscreenBtn.textContent=active?"⛶ Sair da tela cheia":"⛶ Tela cheia";
+}
+document.addEventListener("fullscreenchange",updateFullscreenLabel);
+document.addEventListener("webkitfullscreenchange",updateFullscreenLabel);
+function endGame(){
+ running=false;
+ obstacles=[];particles=[];
+ score=0;timeLeft=MISSION_TIME;
+ scoreEl.textContent="0";timeEl.textContent=MISSION_TIME;
+ progressEl.style.width="0%";
+ overlay.innerHTML=`<div class="serafina">🐔🚀</div><h2>Serafina — Desafio Espacial</h2><p>Olá, pequeno astronauta! Ajude Serafina a atravessar o espaço, desviando dos asteroides até chegar à Lua.</p><p class="tip">💡 Dica: com atenção, coragem e persistência, podemos superar desafios!</p><button id="startBtn">🚀 Começar missão</button>`;
+ overlay.classList.remove("hidden");
+ document.getElementById("startBtn").addEventListener("click",startGame);
+}
+function startGame(){overlay.classList.add("hidden");resetGame()}
+function loop(timestamp){const dt=Math.min(.05,(timestamp-lastTime)/1000||0);lastTime=timestamp;update(dt);draw();requestAnimationFrame(loop)}
+createStars();player={x:W/2-17,y:H-80,w:34,h:42,targetX:W/2-17};startBtn.addEventListener("click",startGame);quitBtn.addEventListener("click",endGame);fullscreenBtn.addEventListener("click",toggleFullscreen);requestAnimationFrame(loop);
+</script>
+</body>
+</html>
