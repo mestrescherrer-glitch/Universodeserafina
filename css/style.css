@@ -822,3 +822,59 @@ footer a {
     padding: 8px 14px;
   }
 }
+
+/* ============================================
+   DEPOIMENTOS (versão atualizada)
+   ============================================ */
+
+.depoimentos-lista {
+  max-width: 780px;
+  margin: 0 auto;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 24px;
+  padding: 0 20px;
+}
+
+.depoimento-card {
+  background: #fdfaf4;
+  border-radius: 14px;
+  padding: 26px 24px;
+  box-shadow: 0 4px 14px rgba(0,0,0,0.06);
+  position: relative;
+  border-left: 4px solid var(--verde-agua);
+}
+
+.depoimento-card::before {
+  content: '❝';
+  position: absolute;
+  top: 8px;
+  left: 16px;
+  font-size: 42px;
+  color: #e8dfd0;
+  font-family: Georgia, serif;
+  line-height: 1;
+}
+
+.depoimento-texto {
+  font-size: 16px;
+  font-style: italic;
+  color: #3a3a3a;
+  line-height: 1.7;
+  margin-bottom: 16px;
+  position: relative;
+  z-index: 1;
+}
+
+.depoimento-autor {
+  font-weight: bold;
+  color: var(--verde-agua);
+  font-size: 15px;
+  margin-bottom: 4px;
+}
+
+.depoimento-data {
+  font-size: 13px;
+  color: #999;
+  font-style: italic;
+}
